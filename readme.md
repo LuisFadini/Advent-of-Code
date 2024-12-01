@@ -9,7 +9,7 @@ Para esta edição, planejo usar três linguagens de programação: Rust, C e Ja
 
 | Dia | Soluções |
 | --- | --- |
-| Dia 1| [Rust](./2024/day1/day1.rs) |
+| Dia 1| [Rust](./2024/day1/day1.rs) - [JS](./2024/day1/day1.mjs) |
 
 ### 2023
 
