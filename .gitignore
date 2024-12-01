@@ -1,0 +1,10 @@
+
+# AoC gitignore
+input.txt
+
+# Rust gitignore
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
