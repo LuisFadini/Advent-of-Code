@@ -1,4 +1,8 @@
-use std::{collections::{btree_map::Keys, HashMap}, env, fs, ops::Mul, process::exit};
+use std::{
+    collections::{ HashMap},
+    env, fs,
+    process::exit,
+};
 
 fn part1(input_data: String) -> i32 {
     let lines = input_data.trim().split("\n").collect::<Vec<_>>();
@@ -69,18 +73,17 @@ fn part2(input_data: String) -> i32 {
             continue;
         }
 
-        let right_dists_equal_left_one = right_dists.clone().into_iter().filter(|f| *f ==dist).count();
+        let right_dists_equal_left_one = right_dists
+            .clone()
+            .into_iter()
+            .filter(|f| *f == dist)
+            .count();
 
-        lookup.insert(dist, i32::try_from(right_dists_equal_left_one).unwrap()*dist);
-        dist_sum+=lookup.get(&dist).unwrap();
-        // println!(
-        //     "{}",
-        //     right_dists
-        //         .clone()
-        //         .into_iter()
-        //         .reduce(|acc, e| if e == dist { acc * e } else { acc + 0 })
-        //         .unwrap()
-        // )
+        lookup.insert(
+            dist,
+            i32::try_from(right_dists_equal_left_one).unwrap() * dist,
+        );
+        dist_sum += lookup.get(&dist).unwrap();
     }
 
     return dist_sum;
