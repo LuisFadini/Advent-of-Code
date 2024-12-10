@@ -1,8 +1,4 @@
-use std::{
-    collections::{ HashMap},
-    env, fs,
-    process::exit,
-};
+use std::{collections::HashMap, env, fs, process::exit};
 
 fn part1(input_data: String) -> i32 {
     let lines = input_data.trim().split("\n").collect::<Vec<_>>();

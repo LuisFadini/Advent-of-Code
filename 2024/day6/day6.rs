@@ -1,8 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    env, fs,
-    process::exit,
-};
+use std::{collections::HashSet, env, fs, process::exit};
 
 const ROTATIONS: [(i32, i32); 4] = [
     (-1, 0), /* UP    */
@@ -129,13 +125,17 @@ fn part2(input_data: String) -> i32 {
 
     let mut part2 = 0;
 
-    for (y,x) in visited {
-        if (y,x) == start { continue }
+    for (y, x) in visited {
+        if (y, x) == start {
+            continue;
+        }
         let y = y as usize;
         let x = x as usize;
 
         let c = lines[y][x];
-        if c == '#' { continue }
+        if c == '#' {
+            continue;
+        }
         lines[y][x] = '#';
 
         if find_loop(&lines, start) {

@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, env, fs, path, process::exit, str::Lines};
+use std::{collections::VecDeque, env, fs, process::exit};
 
 const DIRECTIONS: [(i32, i32); 4] = [
     (-1, 0), /* UP    */
@@ -59,7 +59,7 @@ fn part1(input_data: String) -> i32 {
             let lines_c = lines.clone();
             line.chars().enumerate().map(move |(x, char)| {
                 if char == '0' {
-                    bfs(&lines_c, (y as i32, x as i32)) // Pass `lines` by reference
+                    bfs(&lines_c, (y as i32, x as i32))
                 } else {
                     0
                 }

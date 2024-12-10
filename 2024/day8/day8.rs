@@ -25,13 +25,7 @@ fn point_within(point: (i32, i32), width: i32, height: i32) -> bool {
     return point.0 >= 0 && point.1 >= 0 && point.0 <= width - 1 && point.1 <= height - 1;
 }
 
-fn parse_input(
-    input_data: String,
-) -> (
-    HashMap<char, Vec<(i32, i32)>>,
-    i32,
-    i32,
-) {
+fn parse_input(input_data: String) -> (HashMap<char, Vec<(i32, i32)>>, i32, i32) {
     let lines = input_data
         .lines()
         .filter(|l| !l.is_empty())
