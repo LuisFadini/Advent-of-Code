@@ -1,0 +1,11 @@
+[package]
+name = "day16"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { workspace = true }
+
+[[bin]]
+name = "day16"
+path = "day16.rs"
