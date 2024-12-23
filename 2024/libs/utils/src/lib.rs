@@ -2,14 +2,19 @@ use std::{fs, time::Instant};
 
 pub mod coordinates;
 
-pub fn run<T>(day: i32, input_files: Vec<&str>, part1: &dyn Fn(String) -> T, part2: &dyn Fn(String) -> T)
-where
-    T: Into<i64> + std::fmt::Display,
+pub fn run<T1, T2>(
+    day: i32,
+    input_files: Vec<&str>,
+    part1: &dyn Fn(String) -> T1,
+    part2: &dyn Fn(String) -> T2,
+) where
+    T1: std::fmt::Display,
+    T2: std::fmt::Display,
 {
     for input_file in input_files {
         let mut output: Vec<String> = vec![];
 
-        if !fs::exists(input_file).unwrap() {
+        if !fs::metadata(input_file).is_ok() {
             println!("Skipping {} as the file doesn't exist on the file system", input_file);
             continue;
         }
@@ -18,30 +23,61 @@ where
 
         println!("Running {}...", input_file);
 
-        output.push(format!("+---------+-------------+------------+"));
-        output.push(format!("| Day {:>2}  | Result      | Time Taken |", day));
-        output.push(format!("+---------+-------------+------------+"));
-
+        // Collect results
         let start_part1 = Instant::now();
         let part1_result = part1(input.clone());
         let duration_part1 = start_part1.elapsed().as_nanos();
-        output.push(format!(
-            "| Part 1  | {:<11} | {:>10} |",
-            part1_result,
-            format_duration(duration_part1)
-        ));
 
         let start_part2 = Instant::now();
         let part2_result = part2(input.clone());
         let duration_part2 = start_part2.elapsed().as_nanos();
+
+        // Determine column widths dynamically
+        let day_column = format!("Day {}", day);
+        let part1_result_str = part1_result.to_string();
+        let part2_result_str = part2_result.to_string();
+        let time1 = format_duration(duration_part1);
+        let time2 = format_duration(duration_part2);
+
+        let day_width = day_column.len().max("Part 2".len());
+        let result_width = "Result".len()
+            .max(part1_result_str.len())
+            .max(part2_result_str.len());
+        let time_width = "Time Taken".len().max(time1.len()).max(time2.len());
+
+        // Draw table header
         output.push(format!(
-            "| Part 2  | {:<11} | {:>10} |",
-            part2_result,
-            format_duration(duration_part2)
+            "+-{:-<day_width$}-+-{:-<result_width$}-+-{:-<time_width$}-+",
+            "", "", ""
+        ));
+        output.push(format!(
+            "| {:^day_width$} | {:^result_width$} | {:^time_width$} |",
+            day_column, "Result", "Time Taken"
+        ));
+        output.push(format!(
+            "+-{:-<day_width$}-+-{:-<result_width$}-+-{:-<time_width$}-+",
+            "", "", ""
         ));
 
-        output.push(format!("+---------+-------------+------------+"));
+        // Part 1 row
+        output.push(format!(
+            "| {:<day_width$} | {:<result_width$} | {:>time_width$} |",
+            "Part 1", part1_result_str, time1
+        ));
 
+        // Part 2 row
+        output.push(format!(
+            "| {:<day_width$} | {:<result_width$} | {:>time_width$} |",
+            "Part 2", part2_result_str, time2
+        ));
+
+        // Draw table footer
+        output.push(format!(
+            "+-{:-<day_width$}-+-{:-<result_width$}-+-{:-<time_width$}-+",
+            "", "", ""
+        ));
+
+        // Print table
         println!("{}", output.join("\n"));
         println!("");
     }
