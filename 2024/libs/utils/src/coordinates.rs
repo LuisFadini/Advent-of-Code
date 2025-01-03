@@ -9,6 +9,16 @@ pub struct Point<T> {
     pub y: T,
 }
 
+impl<T: Sub<Output = T>+Copy>  Point<T>
+{
+    pub fn distance(&self, other: &Point<T>) -> usize
+    where
+        T: Into<i64>,
+    {
+        ((self.x - other.x).into().abs() + (self.y - other.y).into().abs()).try_into().unwrap()
+    }
+}
+
 impl<T: Add<Output = T> + Copy> Add for Point<T> {
     type Output = Point<T>;
     fn add(self, rhs: Point<T>) -> Point<T> {
@@ -99,4 +109,22 @@ impl Direction {
     pub const DOWN_LEFT: Point<i32> = Point { y: 1, x: -1 };
     pub const LEFT: Point<i32> = Point { y: 0, x: -1 };
     pub const NONE: Point<i32> = Point { y: 0, x: 0 };
+
+    pub const ALL: [Point<i32>; 8] = [
+        self::Direction::UP_LEFT,
+        self::Direction::UP,
+        self::Direction::UP_RIGHT,
+        self::Direction::RIGHT,
+        self::Direction::DOWN_RIGHT,
+        self::Direction::DOWN,
+        self::Direction::DOWN_LEFT,
+        self::Direction::LEFT,
+    ];
+
+    pub const CARDINAL: [Point<i32>; 4] = [
+        self::Direction::UP,
+        self::Direction::RIGHT,
+        self::Direction::DOWN,
+        self::Direction::LEFT,
+    ];
 }
