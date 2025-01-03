@@ -1,5 +1,3 @@
-use std::{env, fs, process::exit};
-
 use regex::Regex;
 
 fn part1(corrupted_input_data: String) -> i32 {
@@ -41,30 +39,26 @@ fn part2(corrupted_input_data: String) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 161);
+        assert_eq!(part1(read_file("./sample1.txt")), 161);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 48);
+        assert_eq!(part2(read_file("./sample2.txt")), 48);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
+    utils::run(
+        3,
+        &["sample1.txt", "sample2.txt", "input.txt"],
+        &part1,
+        &part2,
     );
 }

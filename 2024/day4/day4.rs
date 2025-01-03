@@ -1,5 +1,3 @@
-use std::{env, fs, process::exit};
-
 fn part1(input_data: String) -> i32 {
     let input_data_lines: Vec<&str> = input_data.lines().collect();
     let mut valid_sequences = 0;
@@ -98,30 +96,21 @@ fn get_neighbors(lines: &[&str], i: usize, j: usize) -> [char; 4] {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 18);
+        assert_eq!(part1(read_file("./sample1.txt")), 18);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 9);
+        assert_eq!(part2(read_file("./sample1.txt")), 9);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(4, &["sample1.txt", "input.txt"], &part1, &part2);
 }

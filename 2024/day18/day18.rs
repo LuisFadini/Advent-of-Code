@@ -121,5 +121,5 @@ fn part2(input: String) -> String {
 }
 
 fn main() {
-    utils::run(18, vec!["input.txt"], &part1, &part2);
+    utils::run(18, &["input.txt"], &part1, &part2);
 }

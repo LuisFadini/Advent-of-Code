@@ -4,7 +4,7 @@ pub mod coordinates;
 
 pub fn run<T1, T2>(
     day: i32,
-    input_files: Vec<&str>,
+    input_files: &[&str],
     part1: &dyn Fn(String) -> T1,
     part2: &dyn Fn(String) -> T2,
 ) where

@@ -1,7 +1,4 @@
 use std::cmp::Ordering::{Greater, Less};
-use std::io::{self, stdin, Write};
-use std::process::exit;
-use std::{env, fs};
 
 const WIDTH: i32 = 101;
 const HEIGHT: i32 = 103;
@@ -73,43 +70,6 @@ fn part1(input_robots: String) -> i32 {
     quadrants.0 * quadrants.1 * quadrants.2 * quadrants.3
 }
 
-fn print_to_file(robots: &Vec<Robot>, iteration: i32) {
-    let mut file_buffer = vec![format!("Iteration {}", iteration)];
-
-    let mut robot_counts = [[0; WIDTH as usize]; HEIGHT as usize];
-
-    for robot in robots {
-        robot_counts[robot.pos.y as usize][robot.pos.x as usize] += 1;
-    }
-
-    file_buffer.push(
-        robot_counts
-            .into_iter()
-            .map(|r| {
-                r.into_iter()
-                    .map(|n| {
-                        if n == 0 {
-                            ".".to_string()
-                        } else {
-                            "#".to_string()
-                        }
-                    })
-                    .collect::<String>()
-                    + "\n"
-            })
-            .collect::<String>(),
-    );
-
-    if !fs::exists(format!("./output/output_{}.txt", iteration)).unwrap() {
-        println!("{}", file_buffer.join("\n"));
-        fs::write(
-            format!("./output/output_{}.txt", iteration),
-            file_buffer.join("\n"),
-        )
-        .unwrap();
-    }
-}
-
 fn part2(input_robots: String) -> i32 {
     let mut robots = input_robots
         .lines()
@@ -130,11 +90,7 @@ fn part2(input_robots: String) -> i32 {
         })
         .collect::<Vec<_>>();
 
-    fs::remove_dir_all("./output").unwrap();
-    fs::create_dir("./output").unwrap();
-
     let mut time = 1;
-    let mut last_asked_time = 0;
 
     loop {
         for robot in robots.iter_mut() {
@@ -159,24 +115,8 @@ fn part2(input_robots: String) -> i32 {
                 if x_positions[i] == x_positions[i - 1] + 1 {
                     consecutive_count += 1;
 
-                    if consecutive_count == 10 && last_asked_time != time {
-                        print_to_file(&robots, time);
-                        print!("Press 'y' if it correct or Enter if it is not correct: ");
-                        io::stdout().flush().unwrap();
-
-                        let mut input = String::new();
-
-                        io::stdin().read_line(&mut input).unwrap();
-
-                        let input = input.trim();
-
-                        if input == "y" {
-                            return time;
-                        } else {
-                            fs::remove_file(format!("./output/output_{}.txt", time)).unwrap();
-                            last_asked_time = time
-                        }
-                        break;
+                    if consecutive_count == 15 {
+                        return time;
                     }
                 } else {
                     consecutive_count = 1;
@@ -189,23 +129,16 @@ fn part2(input_robots: String) -> i32 {
 
 #[cfg(test)]
 mod test {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        assert_eq!(part1(fs::read_to_string("./sample1.txt").unwrap()), 12)
+        assert_eq!(part1(read_file("./sample1.txt")), 12)
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(14, &["input.txt"], &part1, &part2);
 }

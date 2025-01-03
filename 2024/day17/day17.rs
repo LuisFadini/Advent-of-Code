@@ -176,26 +176,28 @@ fn part2(input_program: String) -> usize {
 
 #[cfg(test)]
 mod test {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
         assert_eq!(
-            part1(utils::read_file("./sample1.txt")),
+            part1(read_file("./sample1.txt")),
             "4,6,3,5,6,3,5,2,1,0"
         )
     }
 
     #[test]
     fn test2() {
-        assert_eq!(part2(utils::read_file("./sample2.txt")), 117440)
+        assert_eq!(part2(read_file("./sample2.txt")), 117440)
     }
 }
 
 fn main() {
     utils::run(
         17,
-        vec!["sample1.txt", "sample2.txt", "input.txt"],
+        &["sample1.txt", "sample2.txt", "input.txt"],
         &part1,
         &part2,
     );

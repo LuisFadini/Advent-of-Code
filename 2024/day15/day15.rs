@@ -248,42 +248,44 @@ fn part2(input: String) -> i32 {
 
 #[cfg(test)]
 mod test {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        assert_eq!(part1(utils::read_file("./sample1.txt")), 2028)
+        assert_eq!(part1(read_file("./sample1.txt")), 2028)
     }
 
     #[test]
     fn test2() {
-        assert_eq!(part1(utils::read_file("./sample2.txt")), 10092)
+        assert_eq!(part1(read_file("./sample2.txt")), 10092)
     }
 
     #[test]
     fn test3() {
-        assert_eq!(part1(utils::read_file("./sample3.txt")), 908)
+        assert_eq!(part1(read_file("./sample3.txt")), 908)
     }
 
     #[test]
     fn test4() {
-        assert_eq!(part2(utils::read_file("./sample1.txt")), 1751)
+        assert_eq!(part2(read_file("./sample1.txt")), 1751)
     }
     #[test]
     fn test5() {
-        assert_eq!(part2(utils::read_file("./sample2.txt")), 9021)
+        assert_eq!(part2(read_file("./sample2.txt")), 9021)
     }
 
     #[test]
     fn test6() {
-        assert_eq!(part2(utils::read_file("./sample3.txt")), 618)
+        assert_eq!(part2(read_file("./sample3.txt")), 618)
     }
 }
 
 fn main() {
     utils::run(
         15,
-        vec!["sample1.txt", "sample2.txt", "sample3.txt", "input.txt"],
+        &["sample1.txt", "sample2.txt", "sample3.txt", "input.txt"],
         &part1,
         &part2,
     );

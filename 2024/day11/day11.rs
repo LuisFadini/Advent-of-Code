@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, fs, process::exit};
+use std::collections::HashMap;
 
 fn increment_paddle(k: i64, v: i64, paddles: &mut HashMap<i64, i64>) {
     let count = paddles.entry(k).or_insert(0);
@@ -49,30 +49,21 @@ fn part2(input_raw_paddles: String) -> i64 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 55312);
+        assert_eq!(part1(read_file("./sample1.txt")), 55312);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 65601038650482);
+        assert_eq!(part2(read_file("./sample1.txt")), 65601038650482);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(11, &["sample1.txt", "input.txt"], &part1, &part2);
 }

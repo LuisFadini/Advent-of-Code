@@ -1,8 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    env, fs,
-    process::exit,
-};
+use std::collections::{HashMap, HashSet};
 
 fn get_point_diff(point_a: (i32, i32), point_b: (i32, i32)) -> (i32, i32) {
     let (a, b) = if point_a > point_b {
@@ -109,30 +105,21 @@ fn part2(input_data: String) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 14);
+        assert_eq!(part1(read_file("./sample1.txt")), 14);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 34);
+        assert_eq!(part2(read_file("./sample1.txt")), 34);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(8, &["sample1.txt", "input.txt"], &part1, &part2);
 }

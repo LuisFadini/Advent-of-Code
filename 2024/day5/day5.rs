@@ -1,9 +1,6 @@
 use std::{
     cmp::Ordering,
     collections::{HashMap, HashSet},
-    env, fs,
-    process::exit,
-    usize,
 };
 
 fn part1(input_data: String) -> i32 {
@@ -51,7 +48,6 @@ fn is_sorted(orders: &HashMap<usize, HashSet<usize>>, page: &[usize]) -> bool {
 fn part2(input_data: String) -> i32 {
     let (p1, p2) = input_data.split_once("\n\n").unwrap();
 
-    // Parse the orders
     let mut orders = HashMap::<usize, HashSet<usize>>::new();
     for line in p1.lines() {
         let (x, y) = line.split_once("|").unwrap();
@@ -61,17 +57,14 @@ fn part2(input_data: String) -> i32 {
             .insert(x.parse().unwrap());
     }
 
-    // Parse the pages
     let pages = p2.lines().map(|l| {
         l.split(',')
             .map(|w| w.parse::<usize>().unwrap())
             .collect::<Vec<_>>()
     });
 
-    // Calculate the output sum
     let mut out_sum = 0;
     for mut page in pages {
-        // not the greatest solution, but runs ok-ish
         if !is_sorted(&orders, &page) {
             page.sort_by(|a, b| {
                 if let Some(b_vals) = orders.get(b) {
@@ -94,30 +87,21 @@ fn part2(input_data: String) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 143);
+        assert_eq!(part1(read_file("./sample1.txt")), 143);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 123);
+        assert_eq!(part2(read_file("./sample1.txt")), 123);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(5, &["sample1.txt", "input.txt"], &part1, &part2);
 }

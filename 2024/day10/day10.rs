@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, env, fs, process::exit};
+use std::collections::VecDeque;
 
 const DIRECTIONS: [(i32, i32); 4] = [
     (-1, 0), /* UP    */
@@ -113,30 +113,21 @@ fn part2(input_data: String) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 36);
+        assert_eq!(part1(read_file("./sample1.txt")), 36);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part2(file_content), 81);
+        assert_eq!(part2(read_file("./sample1.txt")), 81);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(10, &["sample1.txt", "input.txt"], &part1, &part2);
 }

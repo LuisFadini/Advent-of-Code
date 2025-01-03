@@ -1,5 +1,3 @@
-use std::{env, fs, process::exit};
-
 use regex::Regex;
 
 fn capture_x_y(input: &str) -> (i64, i64) {
@@ -84,32 +82,21 @@ fn part2(input_controls: String) -> i64 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 480);
+        assert_eq!(part1(read_file("./sample1.txt")), 480);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part2(file_content), 875318608908);
+        assert_eq!(part2(read_file("./sample1.txt")), 875318608908);
     }
 }
 
 fn main() {
-    let file_content = fs::read_to_string("./sample1.txt").unwrap();
-    println!("{}", part2(file_content));
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(13, &["sample1.txt", "input.txt"], &part1, &part2);
 }

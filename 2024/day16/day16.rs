@@ -297,19 +297,21 @@ fn part2(input_map: String) -> i32 {
 
 #[cfg(test)]
 mod test {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        assert_eq!(part1(utils::read_file("./sample1.txt")), 7036)
+        assert_eq!(part1(read_file("./sample1.txt")), 7036)
     }
 
     #[test]
     fn test2() {
-        assert_eq!(part2(utils::read_file("./sample1.txt")), 45)
+        assert_eq!(part2(read_file("./sample1.txt")), 45)
     }
 }
 
 fn main() {
-    utils::run(16, vec!["sample1.txt", "input.txt"], &part1, &part2);
+    utils::run(16, &["sample1.txt", "input.txt"], &part1, &part2);
 }

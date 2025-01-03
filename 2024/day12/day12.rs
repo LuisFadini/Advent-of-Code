@@ -1,5 +1,3 @@
-use std::{env, fs, process::exit};
-
 fn get_char(y: usize, x: usize, map: &Vec<&str>) -> char {
     map.get(y).unwrap().chars().nth(x).unwrap()
 }
@@ -110,42 +108,31 @@ fn part2(input_map: String) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part1(file_content), 140);
+        assert_eq!(part1(read_file("./sample1.txt")), 140);
     }
 
     #[test]
     fn test2() {
-        let file_content = fs::read_to_string("./sample2.txt").unwrap();
-        assert_eq!(part1(file_content), 1930);
+        assert_eq!(part1(read_file("./sample2.txt")), 1930);
     }
 
     #[test]
     fn test3() {
-        let file_content = fs::read_to_string("./sample1.txt").unwrap();
-        assert_eq!(part2(file_content), 80);
+        assert_eq!(part2(read_file("./sample1.txt")), 80);
     }
 
     #[test]
     fn test4() {
-        let file_content = fs::read_to_string("./sample3.txt").unwrap();
-        assert_eq!(part2(file_content), 236);
+        assert_eq!(part2(read_file("./sample2.txt")), 236);
     }
 }
 
 fn main() {
-    let input_path = env::args().nth(1);
-    if input_path.is_none() {
-        println!("Input path should be specified!");
-        exit(1);
-    }
-
-    println!(
-        "Output: {}",
-        part2(fs::read_to_string(input_path.unwrap()).unwrap())
-    );
+    utils::run(12, &["sample1.txt", "sample2.txt", "sample3.txt", "input.txt"], &part1, &part2);
 }

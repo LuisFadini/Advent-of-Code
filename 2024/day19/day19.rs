@@ -70,19 +70,21 @@ fn part2(input: String) -> usize {
 
 #[cfg(test)]
 mod tests {
+    use utils::read_file;
+
     use super::*;
 
     #[test]
     fn test1() {
-        assert_eq!(part1(utils::read_file("sample1.txt")), 6);
+        assert_eq!(part1(read_file("sample1.txt")), 6);
     }
 
     #[test]
     fn test2() {
-        assert_eq!(part2(utils::read_file("sample1.txt")), 16);
+        assert_eq!(part2(read_file("sample1.txt")), 16);
     }
 }
 
 fn main() {
-    utils::run(19, vec!["sample1.txt", "input.txt"], &part1, &part2);
+    utils::run(19, &["sample1.txt", "input.txt"], &part1, &part2);
 }

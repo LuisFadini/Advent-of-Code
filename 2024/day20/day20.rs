@@ -87,5 +87,5 @@ fn part2(input: String) -> i32 {
 }
 
 fn main() {
-    utils::run(20, vec!["input.txt"], &part1, &part2);
+    utils::run(20, &["input.txt"], &part1, &part2);
 }
