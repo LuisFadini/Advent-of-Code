@@ -32,6 +32,7 @@ Para esta edição, planejo usar três linguagens de programação: Rust, C e Ja
 | Dia 20 | [Rust](./2024/day20/day20.rs)                            |
 | Dia 21 | [Rust](./2024/day21/day21.rs)                            |
 | Dia 22 | [Rust](./2024/day22/day22.rs)                            |
+| Dia 23 | [Rust](./2024/day23/day23.rs)                            |
 
 ### 2023
 
