@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 utils = { workspace = true }
+itertools = "0.14.0"
 
 [[bin]]
 name = "day1"

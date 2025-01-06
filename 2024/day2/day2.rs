@@ -1,55 +1,42 @@
-fn part1(report_data: String) -> i32 {
-    let reports = report_data
-        .trim()
-        .split("\n")
-        .collect::<Vec<_>>()
-        .into_iter()
+fn part1(report_data: String) -> usize {
+    report_data
+        .lines()
         .map(|l| {
-            l.trim()
-                .split_ascii_whitespace()
+            l.split_ascii_whitespace()
                 .map(|c| c.parse::<i32>().unwrap())
                 .collect::<Vec<_>>()
         })
-        .collect::<Vec<_>>();
-
-    return reports
-        .into_iter()
-        .filter(|r| is_safe(&r))
+        .filter(|r| is_safe(r))
         .count()
-        .try_into()
-        .unwrap();
 }
 
-fn part2(report_data: String) -> i32 {
-    let reports = report_data
-        .trim()
-        .split("\n")
-        .collect::<Vec<_>>()
-        .into_iter()
+fn part2(report_data: String) -> usize {
+    report_data
+        .lines()
         .map(|l| {
             l.trim()
                 .split(" ")
                 .map(|c| c.parse::<i32>().unwrap())
                 .collect::<Vec<_>>()
         })
-        .collect::<Vec<_>>();
-
-    return reports
-        .into_iter()
         .filter(|r| safe_with_removal(&r))
         .count()
-        .try_into()
-        .unwrap();
 }
 
 fn is_safe(level: &Vec<i32>) -> bool {
-    let only_increasing = level.windows(2).all(|w| w[0] < w[1]);
-    let only_decreasing = level.windows(2).all(|w| w[0] > w[1]);
-    let dist_ok = level
-        .windows(2)
-        .all(|w| 1 <= (w[0] - w[1]).abs() && (w[0] - w[1]).abs() <= 3);
-
-    return (only_increasing ^ only_decreasing) && dist_ok;
+    let mut is_increasing = true;
+    let mut is_decreasing = true;
+    let mut is_distance_ok = true;
+    for w in level.windows(2) {
+        let difference = w[1] - w[0];
+        is_increasing &= difference > 0;
+        is_decreasing &= difference < 0;
+        if !(1..=3).contains(&difference.abs()) {
+            is_distance_ok = false;
+            break;
+        }
+    }
+    (is_increasing ^ is_decreasing) && is_distance_ok
 }
 
 fn safe_with_removal(level: &Vec<i32>) -> bool {
@@ -57,16 +44,16 @@ fn safe_with_removal(level: &Vec<i32>) -> bool {
         return true;
     }
 
+    let mut cloned_level = level.clone();
     for i in 0..level.len() {
-        let mut cloned_level = level.clone();
         cloned_level.remove(i);
-
         if is_safe(&cloned_level) {
             return true;
         }
+        cloned_level = level.clone();
     }
 
-    return false;
+    false
 }
 
 #[cfg(test)]
@@ -77,12 +64,12 @@ mod tests {
 
     #[test]
     fn test1() {
-        assert_eq!(part1(read_file("./sample1.txt")), 2);
+        assert_eq!(part1(read_file("sample1.txt")), 2);
     }
 
     #[test]
     fn test2() {
-        assert_eq!(part2(read_file("./sample1.txt")), 4);
+        assert_eq!(part2(read_file("sample1.txt")), 4);
     }
 }
 
