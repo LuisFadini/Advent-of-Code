@@ -3,8 +3,8 @@ use std::{
     collections::{HashMap, HashSet},
 };
 
-fn part1(input_data: String) -> i32 {
-    let (p1, p2) = input_data.split_once("\n\n").unwrap();
+fn parse_input(input: String) -> (HashMap<usize, HashSet<usize>>, Vec<Vec<usize>>) {
+    let (p1, p2) = input.split_once("\n\n").unwrap();
 
     let mut orders = HashMap::<usize, HashSet<usize>>::new();
     for line in p1.lines() {
@@ -15,74 +15,69 @@ fn part1(input_data: String) -> i32 {
             .insert(x.parse().unwrap());
     }
 
-    let pages = p2.lines().map(|l| {
-        l.split(',')
-            .map(|w| w.parse::<usize>().unwrap())
-            .collect::<Vec<_>>()
-    });
+    let pages = p2
+        .lines()
+        .map(|l| {
+            l.split(',')
+                .map(|w| w.parse::<usize>().unwrap())
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
 
-    let mut out_sum = 0;
-    for page in pages {
-        if is_sorted(&orders, &page) {
-            out_sum += page[page.len() / 2];
-        }
-    }
+    (orders, pages)
+}
 
-    return out_sum.try_into().unwrap();
+fn part1(input_data: String) -> usize {
+    let (orders, pages) = parse_input(input_data);
+
+    pages
+        .iter()
+        .filter_map(|p| {
+            if is_sorted(&orders, p) {
+                Some(p[p.len() / 2])
+            } else {
+                None
+            }
+        })
+        .sum()
 }
 
 fn is_sorted(orders: &HashMap<usize, HashSet<usize>>, page: &[usize]) -> bool {
-    let mut ok = true;
-    for (i, x) in page.iter().enumerate() {
-        for y in &page[i + 1..] {
-            if orders.get(x).is_some() {
-                if orders.get(x).unwrap().contains(y) {
-                    ok = false;
+    for (i, &x) in page.iter().enumerate() {
+        if let Some(dependencies) = orders.get(&x) {
+            for &y in &page[i + 1..] {
+                if dependencies.contains(&y) {
+                    return false;
                 }
             }
         }
     }
-    ok
+    true
 }
 
-fn part2(input_data: String) -> i32 {
-    let (p1, p2) = input_data.split_once("\n\n").unwrap();
+fn part2(input_data: String) -> usize {
+    let (orders, mut pages) = parse_input(input_data);
 
-    let mut orders = HashMap::<usize, HashSet<usize>>::new();
-    for line in p1.lines() {
-        let (x, y) = line.split_once("|").unwrap();
-        orders
-            .entry(y.parse().unwrap())
-            .or_default()
-            .insert(x.parse().unwrap());
-    }
+    pages
+        .iter_mut()
+        .filter_map(|p| {
+            if !is_sorted(&orders, &p) {
+                p.sort_by(|a, b| {
+                    orders.get(b).map_or(Ordering::Less, |b_vals| {
+                        if b_vals.contains(a) {
+                            Ordering::Greater
+                        } else {
+                            Ordering::Less
+                        }
+                    })
+                });
 
-    let pages = p2.lines().map(|l| {
-        l.split(',')
-            .map(|w| w.parse::<usize>().unwrap())
-            .collect::<Vec<_>>()
-    });
-
-    let mut out_sum = 0;
-    for mut page in pages {
-        if !is_sorted(&orders, &page) {
-            page.sort_by(|a, b| {
-                if let Some(b_vals) = orders.get(b) {
-                    if b_vals.contains(a) {
-                        Ordering::Greater
-                    } else {
-                        Ordering::Less
-                    }
-                } else {
-                    Ordering::Less
-                }
-            });
-
-            out_sum += page[page.len() / 2];
-        }
-    }
-
-    out_sum.try_into().unwrap()
+                Some(p[p.len() / 2])
+            } else {
+                None
+            }
+        })
+        .sum()
 }
 
 #[cfg(test)]
