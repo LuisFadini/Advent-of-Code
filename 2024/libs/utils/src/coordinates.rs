@@ -15,23 +15,21 @@ impl<T> Point<T> {
     }
 }
 
-impl<T: Sub<Output = T>+Copy>  Point<T>
-{
+impl<T: Sub<Output = T> + Copy> Point<T> {
     pub fn distance(&self, other: &Point<T>) -> usize
     where
         T: Into<i64>,
     {
-        ((self.x - other.x).into().abs() + (self.y - other.y).into().abs()).try_into().unwrap()
+        ((self.x - other.x).into().abs() + (self.y - other.y).into().abs())
+            .try_into()
+            .unwrap()
     }
 }
 
 impl<T: Add<Output = T> + Copy> Add for Point<T> {
     type Output = Point<T>;
     fn add(self, rhs: Point<T>) -> Point<T> {
-        Point {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
+        Point::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
 
@@ -45,10 +43,7 @@ impl<T: Add<Output = T> + Copy> AddAssign for Point<T> {
 impl<T: Sub<Output = T> + Copy> Sub for Point<T> {
     type Output = Point<T>;
     fn sub(self, rhs: Point<T>) -> Point<T> {
-        Point {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
+        Point::new(self.x - rhs.x, self.y - rhs.y)
     }
 }
 
@@ -95,10 +90,7 @@ impl<T: PartialOrd + Ord + Copy> Point<T> {
     }
 
     pub fn clamp(self, min: Point<T>, max: Point<T>) -> Point<T> {
-        Point {
-            x: self.x.clamp(min.x, max.x),
-            y: self.y.clamp(min.y, max.y),
-        }
+        Point::new(self.x.clamp(min.x, max.x), self.y.clamp(min.y, max.y))
     }
 }
 

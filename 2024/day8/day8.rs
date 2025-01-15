@@ -24,7 +24,6 @@ fn parse_input(input_data: String) -> (HashMap<char, Vec<Point<i32>>>, i32, i32)
     let height = lines.len() as i32;
 
     let mut map: HashMap<char, Vec<Point<i32>>> = HashMap::new();
-    // let mut points = HashSet::new();
 
     for (y, line) in lines.iter().enumerate() {
         for (x, char) in line.chars().enumerate() {

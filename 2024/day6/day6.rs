@@ -13,11 +13,11 @@ fn next_position(
         return None;
     }
 
-    Some(Point { x, y })
+    Some(Point::new(x, y))
 }
 
 fn parse_input(input: String) -> (Point<i32>, Vec<Vec<char>>) {
-    let mut start = Point::<i32> { x: 0, y: 0 };
+    let mut start = Point::new(0, 0);
 
     let lines: Vec<Vec<char>> = input
         .lines()
@@ -25,10 +25,7 @@ fn parse_input(input: String) -> (Point<i32>, Vec<Vec<char>>) {
         .map(|(y, line)| {
             let mut line = line.to_string();
             if let Some(x) = line.find('^') {
-                start = Point {
-                    x: x as i32,
-                    y: y as i32,
-                };
+                start = Point::new(x as i32, y as i32);
                 line = line.replace('^', ".");
             }
             line.chars().collect()
