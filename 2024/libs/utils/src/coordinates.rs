@@ -9,6 +9,12 @@ pub struct Point<T> {
     pub y: T,
 }
 
+impl<T> Point<T> {
+    pub fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+
 impl<T: Sub<Output = T>+Copy>  Point<T>
 {
     pub fn distance(&self, other: &Point<T>) -> usize
@@ -63,9 +69,9 @@ impl<T: PartialOrd> PartialOrd for Point<T> {
 }
 
 impl<T: Ord> Ord for Point<T> {
-    fn cmp(&self, other: &Point<T>) -> std::cmp::Ordering {
+    fn cmp(&self, other: &Point<T>) -> Ordering {
         match self.x.cmp(&other.x) {
-            std::cmp::Ordering::Equal => self.y.cmp(&other.y),
+            Ordering::Equal => self.y.cmp(&other.y),
             other => other,
         }
     }

@@ -1,27 +1,20 @@
 use std::collections::{HashMap, HashSet};
 
-fn get_point_diff(point_a: (i32, i32), point_b: (i32, i32)) -> (i32, i32) {
-    let (a, b) = if point_a > point_b {
-        (point_b, point_a)
+use utils::coordinates::Point;
+
+fn get_point_diff(point_a: Point<i32>, point_b: Point<i32>) -> Point<i32> {
+    if point_a > point_b {
+        point_a - point_b
     } else {
-        (point_a, point_b)
-    };
-    return sub_point(b, a);
+        point_b - point_a
+    }
 }
 
-fn sub_point(point_a: (i32, i32), point_b: (i32, i32)) -> (i32, i32) {
-    return (point_a.0 - point_b.0, point_a.1 - point_b.1);
+fn point_within(point: Point<i32>, width: i32, height: i32) -> bool {
+    return point.x >= 0 && point.y >= 0 && point.x <= width - 1 && point.y <= height - 1;
 }
 
-fn add_point(point_a: (i32, i32), point_b: (i32, i32)) -> (i32, i32) {
-    return (point_a.0 + point_b.0, point_a.1 + point_b.1);
-}
-
-fn point_within(point: (i32, i32), width: i32, height: i32) -> bool {
-    return point.0 >= 0 && point.1 >= 0 && point.0 <= width - 1 && point.1 <= height - 1;
-}
-
-fn parse_input(input_data: String) -> (HashMap<char, Vec<(i32, i32)>>, i32, i32) {
+fn parse_input(input_data: String) -> (HashMap<char, Vec<Point<i32>>>, i32, i32) {
     let lines = input_data
         .lines()
         .filter(|l| !l.is_empty())
@@ -30,24 +23,23 @@ fn parse_input(input_data: String) -> (HashMap<char, Vec<(i32, i32)>>, i32, i32)
     let width = lines[0].len() as i32;
     let height = lines.len() as i32;
 
-    let mut map: HashMap<char, Vec<(i32, i32)>> = HashMap::new();
-    let mut points = HashSet::new();
+    let mut map: HashMap<char, Vec<Point<i32>>> = HashMap::new();
+    // let mut points = HashSet::new();
 
     for (y, line) in lines.iter().enumerate() {
         for (x, char) in line.chars().enumerate() {
-            if char == '.' {
-                continue;
+            if char != '.' {
+                map.entry(char)
+                    .or_default()
+                    .push(Point::new(x as i32, y as i32));
             }
-            let point: (i32, i32) = (x as i32, y as i32);
-            map.entry(char).or_default().push(point);
-            points.insert(point);
         }
     }
 
     return (map, width, height);
 }
 
-fn part1(input_data: String) -> i32 {
+fn part1(input_data: String) -> usize {
     let (map, width, height) = parse_input(input_data);
 
     let mut antinodes = HashSet::new();
@@ -58,8 +50,8 @@ fn part1(input_data: String) -> i32 {
                 let diff = get_point_diff(point_a, point_b);
                 let (min, max) = (point_a.min(point_b), point_a.max(point_b));
 
-                let antinode_1 = sub_point(min, diff);
-                let antinode_2 = add_point(max, diff);
+                let antinode_1 = min - diff;
+                let antinode_2 = max + diff;
 
                 if point_within(antinode_1, width, height) {
                     antinodes.insert(antinode_1);
@@ -71,10 +63,10 @@ fn part1(input_data: String) -> i32 {
         }
     }
 
-    antinodes.len() as i32
+    antinodes.len()
 }
 
-fn part2(input_data: String) -> i32 {
+fn part2(input_data: String) -> usize {
     let (map, width, height) = parse_input(input_data);
 
     let mut antinodes = HashSet::new();
@@ -88,19 +80,19 @@ fn part2(input_data: String) -> i32 {
                 let mut current_point = min;
                 while point_within(current_point, width, height) {
                     antinodes.insert(current_point);
-                    current_point = sub_point(current_point, diff);
+                    current_point = current_point - diff;
                 }
 
                 let mut current_point = max;
                 while point_within(current_point, width, height) {
                     antinodes.insert(current_point);
-                    current_point = add_point(current_point, diff);
+                    current_point = current_point + diff;
                 }
             }
         }
     }
 
-    antinodes.len() as i32
+    antinodes.len()
 }
 
 #[cfg(test)]
