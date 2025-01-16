@@ -1,28 +1,24 @@
-use std::collections::VecDeque;
+use std::collections::{HashSet, VecDeque};
 
-const DIRECTIONS: [(i32, i32); 4] = [
-    (-1, 0), /* UP    */
-    (0, 1),  /* RIGHT */
-    (1, 0),  /* DOWN  */
-    (0, -1), /* LEFT  */
-];
+use utils::coordinates::{Direction, Point};
 
-fn get_char(lines: &Vec<&str>, position: (i32, i32)) -> Option<char> {
+fn get_char(lines: &Vec<&str>, position: Point<i32>) -> Option<char> {
     lines
-        .get(position.0 as usize)
-        .and_then(|line| line.chars().nth(position.1 as usize))
+        .get(position.y as usize)
+        .and_then(|line| line.chars().nth(position.x as usize))
 }
 
-fn bfs(lines: &Vec<&str>, start: (i32, i32)) -> i32 {
+fn bfs(lines: &Vec<&str>, start: Point<i32>) -> i32 {
     let mut queue = VecDeque::new();
-    let mut visited = vec![start];
+    let mut visited = HashSet::new();
     let mut score = 0;
 
     queue.push_back(start);
+    visited.insert(start);
 
     while let Some(position) = queue.pop_front() {
-        for direction in DIRECTIONS {
-            let next_position = (position.0 + direction.0, position.1 + direction.1);
+        for direction in Direction::CARDINAL {
+            let next_position = position + direction;
 
             if visited.contains(&next_position) {
                 continue;
@@ -33,7 +29,7 @@ fn bfs(lines: &Vec<&str>, start: (i32, i32)) -> i32 {
                 let next_height = next_char.to_digit(10).unwrap();
 
                 if next_height == current_height + 1 {
-                    visited.push(next_position);
+                    visited.insert(next_position);
 
                     if next_height == 9 {
                         score += 1;
@@ -52,14 +48,13 @@ fn part1(input_data: String) -> i32 {
     let lines: Vec<&str> = input_data.lines().collect();
 
     lines
-        .clone()
         .iter()
         .enumerate()
         .flat_map(|(y, line)| {
             let lines_c = lines.clone();
             line.chars().enumerate().map(move |(x, char)| {
                 if char == '0' {
-                    bfs(&lines_c, (y as i32, x as i32))
+                    bfs(&lines_c, Point::new(x as i32, y as i32))
                 } else {
                     0
                 }
@@ -72,7 +67,6 @@ fn part2(input_data: String) -> i32 {
     let lines: Vec<&str> = input_data.lines().collect();
 
     lines
-        .clone()
         .iter()
         .enumerate()
         .flat_map(|(y, line)| {
@@ -82,12 +76,11 @@ fn part2(input_data: String) -> i32 {
                 if char == '0' {
                     let mut queue = VecDeque::new();
 
-                    queue.push_back((y as i32, x as i32));
+                    queue.push_back(Point::new(x as i32, y as i32));
 
                     while let Some(position) = queue.pop_front() {
-                        for direction in DIRECTIONS {
-                            let next_position =
-                                (position.0 + direction.0, position.1 + direction.1);
+                        for direction in Direction::CARDINAL {
+                            let next_position = position + direction;
 
                             if let Some(next_char) = get_char(&lines_c, next_position) {
                                 let current_height =

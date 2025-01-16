@@ -1,15 +1,14 @@
 use std::collections::HashMap;
 
 fn increment_paddle(k: i64, v: i64, paddles: &mut HashMap<i64, i64>) {
-    let count = paddles.entry(k).or_insert(0);
-    *count += v;
+    *paddles.entry(k).or_insert(0) += v;
 }
 
 fn blink(input_paddles: String, blink_times: i32) -> i64 {
     let mut paddles: HashMap<i64, i64> = HashMap::new();
 
     input_paddles
-        .split(" ")
+        .split_ascii_whitespace()
         .map(|p| p.parse::<i64>().unwrap())
         .for_each(|p| {
             increment_paddle(p, 1, &mut paddles);
@@ -18,25 +17,22 @@ fn blink(input_paddles: String, blink_times: i32) -> i64 {
     for _ in 0..blink_times {
         let mut new_paddles: HashMap<i64, i64> = HashMap::new();
 
-        paddles
-            .iter()
-            .filter(|&(_, &v)| v != 0)
-            .for_each(|(&k, &v)| match k {
-                0 => increment_paddle(1, v, &mut new_paddles),
-                k if k.to_string().len() % 2 == 0 => {
-                    let k_str = k.to_string();
-                    let (left, right) = k_str.split_at(k.to_string().len() / 2);
+        paddles.iter().for_each(|(&k, &v)| match k {
+            0 => increment_paddle(1, v, &mut new_paddles),
+            k if k.to_string().len() % 2 == 0 => {
+                let k_str = k.to_string();
+                let (left, right) = k_str.split_at(k.to_string().len() / 2);
 
-                    increment_paddle(left.to_string().parse().unwrap(), v, &mut new_paddles);
-                    increment_paddle(right.to_string().parse().unwrap(), v, &mut new_paddles);
-                }
-                _ => increment_paddle(k * 2024, v, &mut new_paddles),
-            });
+                increment_paddle(left.parse().unwrap(), v, &mut new_paddles);
+                increment_paddle(right.parse().unwrap(), v, &mut new_paddles);
+            }
+            _ => increment_paddle(k * 2024, v, &mut new_paddles),
+        });
 
         paddles = new_paddles;
     }
 
-    paddles.values().sum::<i64>()
+    paddles.values().sum()
 }
 
 fn part1(input_raw_paddles: String) -> i64 {

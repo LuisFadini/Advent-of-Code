@@ -1,41 +1,40 @@
-use std::ops::Range;
+use std::{iter::repeat, ops::Range};
 
-fn part1(input_data: String) -> u64 {
-    let mut disk_content = Vec::new();
+fn part1(input_data: String) -> usize {
+    let mut disk_content = Vec::with_capacity(input_data.len());
 
     for (index, size_char) in input_data.chars().enumerate() {
-        let space_size = size_char.to_digit(10).unwrap();
+        let space_size = size_char.to_digit(10).unwrap() as usize;
 
-        disk_content.extend(
-            std::iter::repeat(if index % 2 == 0 {
-                Some(index / 2)
-            } else {
-                None
-            })
-            .take(space_size as usize),
-        );
+        let value = if index % 2 == 0 {
+            Some(index / 2)
+        } else {
+            None
+        };
+
+        disk_content.extend(repeat(value).take(space_size));
     }
 
     let mut head = 0;
     let mut tail = disk_content.len() - 1;
 
-    loop {
-        while disk_content[head].is_some() {
+    while head < tail {
+        while head < disk_content.len() && disk_content[head].is_some() {
             head += 1;
         }
-        while disk_content[tail].is_none() {
+        while tail > 0 && disk_content[tail].is_none() {
             tail -= 1;
         }
-        if head >= tail {
-            break;
+
+        if head < tail {
+            disk_content.swap(head, tail);
         }
-        disk_content.swap(head, tail);
     }
 
     disk_content
         .iter()
         .enumerate()
-        .map(|(index, id)| (index as u64) * u64::try_from(id.unwrap_or(0)).unwrap())
+        .map(|(index, id)| (index) * id.unwrap_or(0))
         .sum()
 }
 
@@ -46,8 +45,8 @@ fn part2(input_data: String) -> u64 {
     let mut curr_i = 0;
 
     for (index, size_char) in input_data.chars().enumerate() {
-        let space_size = size_char.to_digit(10).unwrap();
-        let space_range = curr_i as usize..curr_i as usize + space_size as usize;
+        let space_size = size_char.to_digit(10).unwrap() as usize;
+        let space_range = curr_i..curr_i + space_size;
         curr_i = space_range.end;
 
         if index % 2 == 0 {
