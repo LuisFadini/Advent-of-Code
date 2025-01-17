@@ -1,22 +1,25 @@
+use utils::coordinates::Point;
+
 fn get_char(y: usize, x: usize, map: &Vec<&str>) -> char {
     map.get(y).unwrap().chars().nth(x).unwrap()
 }
 
-fn coord_to_index([x, y]: [usize; 2], width: usize) -> usize {
-    y * width + x
+fn coord_to_index(point: Point<usize>, width: usize) -> usize {
+    point.y * width + point.x
 }
 
 fn is_same_area(
-    lines: Vec<&str>,
+    lines: &Vec<&str>,
     area_char: char,
-    [x, y]: [usize; 2],
+    point: Point<usize>,
     width: usize,
     height: usize,
 ) -> bool {
-    x < width && y < height && get_char(y, x, &lines) == area_char
+    point.x < width && point.y < height && get_char(point.y, point.x, &lines) == area_char
 }
 
-fn solve(lines: Vec<&str>, is_part2: bool) -> i32 {
+fn solve(input_map: String, is_part2: bool) -> i32 {
+    let lines = input_map.lines().collect::<Vec<_>>();
     let width = lines[0].len();
     let height = lines.len();
 
@@ -27,7 +30,7 @@ fn solve(lines: Vec<&str>, is_part2: bool) -> i32 {
 
     for start_y in 0..height {
         for start_x in 0..width {
-            let start = [start_x, start_y];
+            let start = Point::new(start_x, start_y);
             if checked[coord_to_index(start, width)] {
                 continue;
             }
@@ -40,26 +43,30 @@ fn solve(lines: Vec<&str>, is_part2: bool) -> i32 {
             to_check.push(start);
             checked[coord_to_index(start, width)] = true;
 
-            while let Some([x, y]) = to_check.pop() {
+            while let Some(Point { x, y }) = to_check.pop() {
                 area += 1;
 
                 let adjacent = [
-                    [x.wrapping_sub(1), y],
-                    [x, y.wrapping_sub(1)],
-                    [x + 1, y],
-                    [x, y + 1],
+                    Point::new(x.wrapping_sub(1), y),
+                    Point::new(x, y.wrapping_sub(1)),
+                    Point::new(x + 1, y),
+                    Point::new(x, y + 1),
                 ];
 
                 let same_adjacent = adjacent
                     .iter()
-                    .map(|&pos| is_same_area(lines.clone(), area_char, pos, width, height))
+                    .map(|&pos| is_same_area(&lines, area_char, pos, width, height))
                     .collect::<Vec<bool>>();
 
                 let adjacent_diagonally = [
-                    [x.wrapping_sub(1), y.wrapping_sub(1)],
-                    [x + 1, y.wrapping_sub(1)],
-                    [x + 1, y + 1],
-                    [x.wrapping_sub(1), y + 1],
+                    Point::new(x.wrapping_sub(1), y.wrapping_sub(1)),
+                    Point::new(x + 1, y.wrapping_sub(1)),
+                    Point::new(x + 1, y + 1),
+                    Point::new(x.wrapping_sub(1), y + 1),
+                    // [x.wrapping_sub(1), y.wrapping_sub(1)],
+                    // [x + 1, y.wrapping_sub(1)],
+                    // [x + 1, y + 1],
+                    // [x.wrapping_sub(1), y + 1],
                 ];
 
                 if is_part2 {
@@ -69,7 +76,7 @@ fn solve(lines: Vec<&str>, is_part2: bool) -> i32 {
                         } else if same_adjacent[i]
                             && same_adjacent[(i + 1) % 4]
                             && !is_same_area(
-                                lines.clone(),
+                                &lines,
                                 area_char,
                                 adjacent_diagonally[i],
                                 width,
@@ -99,11 +106,11 @@ fn solve(lines: Vec<&str>, is_part2: bool) -> i32 {
 }
 
 fn part1(input_map: String) -> i32 {
-    solve(input_map.lines().collect::<Vec<_>>(), false)
+    solve(input_map, false)
 }
 
 fn part2(input_map: String) -> i32 {
-    solve(input_map.lines().collect::<Vec<_>>(), true)
+    solve(input_map, true)
 }
 
 #[cfg(test)]
@@ -134,5 +141,10 @@ mod tests {
 }
 
 fn main() {
-    utils::run(12, &["sample1.txt", "sample2.txt", "sample3.txt", "input.txt"], &part1, &part2);
+    utils::run(
+        12,
+        &["sample1.txt", "sample2.txt", "sample3.txt", "input.txt"],
+        &part1,
+        &part2,
+    );
 }

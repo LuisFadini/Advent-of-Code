@@ -1,27 +1,20 @@
 use std::cmp::Ordering::{Greater, Less};
 
+use utils::coordinates::Point;
+
 const WIDTH: i32 = 101;
 const HEIGHT: i32 = 103;
 
 #[derive(Debug)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-#[derive(Debug)]
 struct Robot {
-    pos: Point,
-    vel: Point,
+    pos: Point<i32>,
+    vel: Point<i32>,
 }
 
-fn capture_point(input: &str) -> Point {
+fn capture_point(input: &str) -> Point<i32> {
     let (x, y) = input.split_once(",").unwrap();
 
-    Point {
-        x: x.parse().unwrap(),
-        y: y.parse().unwrap(),
-    }
+    Point::new(x.parse().unwrap(), y.parse().unwrap())
 }
 
 fn part1(input_robots: String) -> i32 {
